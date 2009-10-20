@@ -1,0 +1,5 @@
+dskellam                density of the skellam distribution (difference of independent Poissons)
+pskellam                cdf of the skellam distribution (difference of independent Poissons)
+pskellams               saddlepoint approximation to pskellam
+qskellam                quantile(s) of the skellam distribution (difference of independent Poissons)
+rskellam                random variates from the skellam distribution (difference of independent Poissons)

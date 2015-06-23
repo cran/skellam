@@ -1,0 +1,123 @@
+\documentclass[12pt]{article}
+
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{The Skellam Distribution}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx,hyperref, amsmath}
+
+
+\usepackage{caption,subcaption,float}
+\newcommand{\subfloat}[2][need a sub-caption]{\subcaptionbox{#1}{#2}}
+
+
+\title{The Skellam distribution}
+\author{Patrick E.\ Brown}
+
+
+\begin{document}
+\maketitle 
+
+
+<<setup,echo=FALSE,cache=FALSE,results='hide',message=FALSE>>=
+library('knitr')
+opts_chunk$set(echo=TRUE,message=FALSE,
+		dev='pdf', 
+		fig.align='default',fig.pos='H',width=80,
+		fig.height=5,fig.width=6,out.width="0.5\\textwidth",
+		dev.args=list(bg='white')
+)
+@
+
+Consider 
+\[
+X \sim \text{Poisson}(\lambda_1)
+\]
+and
+\[
+Y \sim \text{Poisson}(\lambda_2)
+\]
+then 
+\[
+Z = X - Y
+\]
+has a Skellam distribution with 
+\[
+Z \sim \text{Skellam}(\lambda_2, \lambda_2).
+\]
+See  Wikipedia. \emph{Skellam distribution}
+\url{http://en.wikipedia.org/wiki/Skellam_distribution}
+
+Load the package
+<<library>>=
+library('skellam')
+@
+
+
+Set some parameters
+<<parameters>>=
+N = 5000
+lambda1 = 1.5
+lambda2 = 0.5
+@
+
+
+Simulate Poisson and Skellam random variables
+<<simulation>>=
+X = rpois(N, lambda1)
+Y = rpois(N, lambda2)
+XminusY = X - Y
+Z = rskellam(N, lambda1, lambda2)
+@
+
+Produce figures
+<<theFigures, fig.cap=paste('Differences of Poisson and Skellam with parameters ', lambda1, ' and ', lambda2), fig.subcap=c('densities','quantiles'), echo=TRUE>>=
+
+plot(table(XminusY), xlab='X - Y', ylab='', type='p', pch=1)
+points(table(Z), col='red', type='p', pch=3, cex=2)
+xseq = seq(floor(par('usr')[1]), ceiling(par('usr')[2]))
+points(xseq, N*dskellam(xseq, lambda1, lambda2), col='blue',
+    pch=4, cex=3)
+legend('topright', pch=c(1,3,4), col=c('black','red','blue'),
+    legend=c('rpois-rpois', 'rskellam', 'dskellam'))
+
+Sprob = seq(0,1,by=1/100)
+qZ = quantile(Z, prob=Sprob)
+plot(qZ, qskellam(Sprob, lambda1, lambda2))
+abline(c(0,1), col='#FF000040')
+
+@
+
+If the {\tt dskellam} and {\tt rskellam} functions are correct, the three
+sets points on the left will be coincident.  If the {\tt qskellam} funciton is
+correct the points on the right will lie on the red line.
+
+<<parAgain, echo=FALSE>>=
+lambda1 = 0.5
+lambda2 = 1.25
+@
+
+<<simulationAgain, echo=FALSE>>=
+<<simulation>>
+@
+
+<<theFiguresAgain, fig.cap=paste('Differences of Poisson and Skellam with parameters ', lambda1, ' and ', lambda2), fig.subcap=c('densities','quantiles'), echo=FALSE>>=
+<<theFigures>>
+@
+
+
+<<parLarge, echo=FALSE>>=
+lambda1 = 12
+lambda2 = 8
+@
+
+<<simulationLarge, echo=FALSE>>=
+<<simulation>>
+@
+
+<<theFiguresLarge, fig.cap=paste('Differences of Poisson and Skellam with parameters ', lambda1, ' and ', lambda2), fig.subcap=c('densities','quantiles'), echo=FALSE>>=
+<<theFigures>>
+@
+
+
+\end{document}

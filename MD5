@@ -1,5 +1,5 @@
-b69f9a9de693cf2ef16464f1de63674b *DESCRIPTION
-9fdfeb11f7ddba6f3aab9aaa6b1ac5dd *NAMESPACE
+60477ab4cb9782da31a774e7cb53514d *DESCRIPTION
+4121b3209f2cd34d2dba248ad7509680 *NAMESPACE
 09ef9fc3266c9e0c2c681b1f3ed0008a *R/dskellam.r
 43bfda2551920b90146d8e41ed2a3b43 *R/dskellam.sp.r
 259f1b444e84561b7106903cd23dd716 *R/pskellam.r
@@ -7,10 +7,10 @@ b69f9a9de693cf2ef16464f1de63674b *DESCRIPTION
 360fa5a0cdd50de24fc943bb75d1663b *R/qskellam.r
 cdf42c6d419af73e79a1f49134268d5f *R/rskellam.r
 9e065dc0090cd2047235a17aac4129d2 *build/vignette.rds
-eb855cfe663d101c9eea4e5d7b64c110 *inst/CITATION
-3ed6235bafc97c3430c0864c84417e72 *inst/doc/skellam.pdf
-a4b51b1e44fe79652b8ea26ac0dc3cd0 *inst/doc/skellam.rnw
+b0b6011f347c9001c1517bcc4617532e *inst/CITATION
+37a3a12f83c2767f802610a70f42a890 *inst/doc/skellam.pdf
+62f96685bb463a1954da647138963fa2 *inst/doc/skellam.rnw
 fcb55164de716ece11715ef660830b13 *man/skellam.Rd
 d005bc348f25712323f74527b599b04b *tests/skellam.R
 7010fa8231cd82bcbaa9cdc00ae4a79e *vignettes/Makefile
-a4b51b1e44fe79652b8ea26ac0dc3cd0 *vignettes/skellam.rnw
+62f96685bb463a1954da647138963fa2 *vignettes/skellam.rnw

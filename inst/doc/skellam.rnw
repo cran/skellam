@@ -4,11 +4,12 @@
 %\VignetteIndexEntry{The Skellam Distribution}
 
 \usepackage[margin=1in]{geometry}
-\usepackage{graphicx,hyperref, amsmath}
+\usepackage{graphicx, hyperref, amsmath}
 
+\usepackage{caption}
+\usepackage{subcaption}
 
-\usepackage{caption,subcaption,float}
-\newcommand{\subfloat}[2][need a sub-caption]{\subcaptionbox{#1}{#2}}
+\providecommand{\subfloat}[2][need a sub-caption]{\subcaptionbox{#1}{#2}}
 
 
 \title{The Skellam distribution}
@@ -23,7 +24,7 @@
 library('knitr')
 opts_chunk$set(echo=TRUE,message=FALSE,
 		dev='pdf', 
-		fig.align='default',fig.pos='H',width=80,
+		fig.align='default',width=80,
 		fig.height=5,fig.width=6,out.width="0.5\\textwidth",
 		dev.args=list(bg='white')
 )

@@ -1,19 +1,17 @@
 citHeader("To cite skellam in publications use:")
 
-citEntry(entry = "Article",
-  title        = "Model-Based Geostatistics the Easy Way",
-  author       = personList(as.person("Patrick E. Brown")),
-  journal      = "Journal of Statistical Software",
-  year         = "2015",
-  volume       = "63",
-  number       = "12",
-  pages        = "1--24",
-  url          = "http://www.jstatsoft.org/v63/i12/",
+citEntry(entry = "Manual",
+  title   = "Densities and Sampling for the Skellam Distribution",
+  author  = personList(
+  	as.person("Jerry W Lewis"), 
+  	as.person("Patrick E Brown")),
+  year    = 2015,
+  url = 
+  	"http://r-forge.r-project.org/projects/healthqueues",
 
-  textVersion  =
-  paste("Patrick E. Brown (2015).",
-        "Model-Based Geostatistics the Easy Way.",
-        "Journal of Statistical Software, 63(12), 1-24.",
-        "URL http://www.jstatsoft.org/v63/i12/.")
+textVersion  =
+  paste("Jerry W. Lewis and Patrick E. Brown (2015).",
+        "Densities and Sampling for the Skellam Distribution.",
+        "URL http://r-forge.r-project.org/projects/healthqueues.")
 )
 

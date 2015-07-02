@@ -3,3 +3,5 @@
 
 # Export all names
 exportPattern(".")
+
+importFrom(stats, dpois, pchisq, dnorm, pnorm, qpois, qnorm, rpois)

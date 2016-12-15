@@ -1,3 +1,4 @@
+#' @export
 rskellam <- function(n, lambda1, lambda2=lambda1){
  # Skellam random variables
     if (missing(n)|missing(lambda1)) stop("first 2 arguments are required")
@@ -8,6 +9,6 @@ rskellam <- function(n, lambda1, lambda2=lambda1){
     if(any(oops)) warning("NaNs produced")
     ret <- rep(NaN,length.out=n)
     n <- n-sum(oops)
-    ret[!oops] <- rpois(n,lambda1[!oops])-rpois(n,lambda2[!oops])
+    ret[!oops] <- stats::rpois(n,lambda1[!oops])-stats::rpois(n,lambda2[!oops])
     ret
 }

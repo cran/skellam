@@ -1,3 +1,4 @@
+#' @export
 qskellam <- function(p, lambda1, lambda2=lambda1, lower.tail=TRUE, log.p=FALSE){
  # inverse CDF of Skellam distriubition (difference of Poissons)
     if (missing(p)|missing(lambda1)) stop("first 2 arguments are required")
@@ -15,8 +16,8 @@ qskellam <- function(p, lambda1, lambda2=lambda1, lower.tail=TRUE, log.p=FALSE){
     if (getOption("verbose")){  # set via  options(verbose=TRUE)  # could create a new option called validate, but would would have to test for existence before value
         nz<-rep(TRUE,length.out=len)    # verify search by using it for Poisson too
     } else {
-        ret[lambda2==0] <- qpois(p[lambda2==0],lambda1[lambda2==0],lower.tail=lower.tail,log.p=log.p)
-        ret[lambda1==0] <- -qpois(p[lambda1==0],lambda2[lambda1==0],lower.tail=!lower.tail,log.p=log.p)
+        ret[lambda2==0] <- stats::qpois(p[lambda2==0],lambda1[lambda2==0],lower.tail=lower.tail,log.p=log.p)
+        ret[lambda1==0] <- -stats::qpois(p[lambda1==0],lambda2[lambda1==0],lower.tail=!lower.tail,log.p=log.p)
         nz <- (lambda1!=0)&(lambda2!=0)
     }
    # handle boundaries correctly
@@ -38,7 +39,7 @@ qskellam <- function(p, lambda1, lambda2=lambda1, lower.tail=TRUE, log.p=FALSE){
         lambda2 <- lambda2[nz]
     }
    # Cornish-Fisher approximations
-    z <- qnorm(p,lower.tail=lower.tail,log.p=log.p)
+    z <- stats::qnorm(p,lower.tail=lower.tail,log.p=log.p)
     mu <- lambda1-lambda2
     vr <- lambda1+lambda2
     sg <- sqrt(vr)

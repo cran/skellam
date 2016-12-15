@@ -1,3 +1,4 @@
+#' @export
 dskellam <- function(x, lambda1, lambda2=lambda1, log=FALSE){
  # density (PMF) of Skellam distriubition (difference of Poissons)
     if (missing(x)|missing(lambda1)) stop("first 2 arguments are required")
@@ -27,8 +28,8 @@ dskellam <- function(x, lambda1, lambda2=lambda1, log=FALSE){
     x <- trunc(x)
     ret <- rep(NaN,length.out=len)
    # handle a zero lambda separately (avoids division by zero & accuracy issues for large values of lambda or x)
-    ret[lambda1==0] <- dpois(-x[lambda1==0],lambda2[lambda1==0],log=log)
-    ret[lambda2==0] <- dpois( x[lambda2==0],lambda1[lambda2==0],log=log)    # corrects bug in VGAM 0.7-9
+    ret[lambda1==0] <- stats::dpois(-x[lambda1==0],lambda2[lambda1==0],log=log)
+    ret[lambda2==0] <- stats::dpois( x[lambda2==0],lambda1[lambda2==0],log=log)    # corrects bug in VGAM 0.7-9
    # non-zero lambdas
     nz <- is.finite(lambda1)&is.finite(lambda2)&(lambda1>0)&(lambda2>0)
     L1 <- lambda1[nz];

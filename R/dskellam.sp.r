@@ -1,3 +1,4 @@
+#' @export
 dskellam.sp <- function(x, lambda1, lambda2=lambda1, log=FALSE){
  # saddlepoint density (PMF) for Skellam distribution
   terms=1

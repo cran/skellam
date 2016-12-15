@@ -1,17 +1,15 @@
-citHeader("To cite skellam in publications use:")
 
-citEntry(entry = "Manual",
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "Manual",
   title   = "Densities and Sampling for the Skellam Distribution",
-  author  = personList(
-  	as.person("Jerry W Lewis"), 
-  	as.person("Patrick E Brown")),
-  year    = 2015,
-  url = 
-  	"http://r-forge.r-project.org/projects/healthqueues",
-
-textVersion  =
-  paste("Jerry W. Lewis and Patrick E. Brown (2015).",
-        "Densities and Sampling for the Skellam Distribution.",
-        "URL http://r-forge.r-project.org/projects/healthqueues.")
+  author  = c(
+  	person("Jerry W","Lewis"), 
+  	person("Patrick E","Brown"),
+  	person("Michail","Tsagris")),
+  year    = year,
+  note=note,
+  url = "http://r-forge.r-project.org/projects/healthqueues"
 )
 

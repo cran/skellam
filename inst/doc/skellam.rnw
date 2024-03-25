@@ -30,13 +30,6 @@ opts_chunk$set(echo=TRUE,message=FALSE,
 )
 @
 
-This package was originally created by Jerry W. Lewis, who I have been unable to
-reach.  In 1999 he had the following address:\\
-\\
-Jerry W. Lewis, PhD\\
-Genetics Institute\\
-1 Burtt Rd.\\
-Andover, MA 01810\\
 
 Consider 
 \[

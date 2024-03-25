@@ -44,7 +44,7 @@ The third column is the t value (coef/se(coef)) and the final column is the p-va
   Strackee, J.; van der Gon, J. J. D. (1962) The frequency distribution of the difference between two Poisson variates.
    \emph{Statistica Neerlandica} \bold{16}/1, 17-23.
 
-   \emph{Karlis and Ntzoufras IMA 2009 presentation} \url{http://stat-athens.aueb.gr/~jbn/papers/files/20_Karlis_Ntzoufras_2009_IMA_presentation_handouts_v01.pdf}
+   \emph{Karlis and Ntzoufras IMA 2009 presentation} \url{http://www2.stat-athens.aueb.gr/~jbn/papers/files/20_Karlis_Ntzoufras_2009_IMA_presentation_handouts_v01.pdf}
 }
 \examples{
 require('skellam')

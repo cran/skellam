@@ -51,7 +51,7 @@ The estimated parameters, \eqn{\hat{\lambda}_1} and \eqn{\hat{\lambda}_2}.
    Abdulhamid, A. A.; Maha, A. O. (2010) On The Poisson Difference Distribution Inference and Applications.
    \emph{BULLETIN of the Malaysian Mathematical Sciences Society}, \bold{33}/1, 17--45.
 
-  Wikipedia. \emph{Skellam distribution} \url{http://en.wikipedia.org/wiki/Skellam_distribution}
+  Wikipedia. \emph{Skellam distribution} \url{https://en.wikipedia.org/wiki/Skellam_distribution}
 }
 \examples{
 require('skellam')

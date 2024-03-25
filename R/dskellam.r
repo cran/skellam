@@ -53,7 +53,7 @@ dskellam <- function(x, lambda1, lambda2=lambda1, log=FALSE){
         s <- log(0.5*(xx+sqrt(xx^2+4*L1*L2))/L1)# the saddlepoint
         K <- L1*(exp(s)-1)+L2*(exp(-s)-1)       # CGF(s)
         K2 <- L1*exp(s)+L2*exp(-s)              # CGF''(s)
-        spd <- exp(K-x*s)/sqrt(2*pi*K2)         # saddlepoint density
+        spd <- exp(K-xx*s)/sqrt(2*pi*K2)         # saddlepoint density, was x in place of xx
         usp <- (spd>1e-308)&is.finite(spd)      # don't trust the existing result
         if (length(usp[usp])>0) {   # add another term to the saddlepoint approximation
             su <- s[usp]

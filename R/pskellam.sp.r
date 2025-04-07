@@ -1,4 +1,5 @@
 #' @export
+#' @rdname skellam
 pskellam.sp <- function(q, lambda1, lambda2=lambda1, lower.tail=TRUE, log.p=FALSE) {
  # Luganni-Rice saddlepoint CDF with Butler's 2nd continuity correction
     if (missing(q)|missing(lambda1)) stop("first 2 arguments are required")

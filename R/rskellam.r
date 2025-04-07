@@ -1,4 +1,5 @@
 #' @export
+#' @rdname skellam
 rskellam <- function(n, lambda1, lambda2=lambda1){
  # Skellam random variables
     if (missing(n)|missing(lambda1)) stop("first 2 arguments are required")

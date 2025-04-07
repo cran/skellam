@@ -1,4 +1,5 @@
 #' @export
+#' @rdname skellam
 pskellam <- function(q, lambda1, lambda2=lambda1, lower.tail=TRUE, log.p=FALSE){
  # CDF of Skellam distriubition (difference of Poissons)
     if (missing(q)|missing(lambda1)) stop("first 2 arguments are required")

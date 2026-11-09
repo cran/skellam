@@ -1,166 +1,169 @@
 ---
-title: "The Skellam Distribution"
-
-date: "`r Sys.Date()`"
-author: "Patrick E. Brown"
+title: "Validating the skellam package"
+author: "Patrick E. Brown; revised by Montasser Ghachem and Oguz Ersan"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{The Skellam Distribution}
+  %\VignetteIndexEntry{Validating the skellam package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-## Overview
-
-This vignette is intended to validate the outputs of the **skellam** package. Specifically, we verify that the following functions:
-
-- **rskellam**: Random variate generation from the Skellam distribution.
-- **dskellam**: Evaluation of the Skellam probability mass function.
-- **qskellam**: Calculation of quantiles for the Skellam distribution.
-
-yield results consistent with the distribution of the difference between two independent Poisson random variables. Two sets of parameters are examined:
-
-- **Low Lambda Scenario**: $\lambda_1 = 1.5$ and $\lambda_2 = 0.5$.
-- **Large Lambda Scenario**: $\lambda_1 = 12$ and $\lambda_2 = 8$.
-
-```{r loading, echo = FALSE, results = 'hide', message=FALSE, warning=FALSE}
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 6, fig.height = 4,
+                      out.width = "100%")
 library(skellam)
-```
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+set.seed(20261108)
 ```
 
-## Theoretical Background
+## What this vignette checks
 
-Consider two independent random variables:
+If $Y_1 \sim \mathrm{Poisson}(\lambda_1)$ and $Y_2 \sim \mathrm{Poisson}(\lambda_2)$
+are independent, their difference $X = Y_1 - Y_2$ has the Skellam distribution,
 
 $$
-X \sim \mathrm{Poisson}(\lambda_1)
+P(X = x) = e^{-(\lambda_1+\lambda_2)} \left(\frac{\lambda_1}{\lambda_2}\right)^{x/2}
+I_{|x|}\!\left(2\sqrt{\lambda_1\lambda_2}\right), \qquad x \in \mathbb{Z},
 $$
 
-and
+with mean $\lambda_1 - \lambda_2$ and variance $\lambda_1 + \lambda_2$. This vignette
+checks, with numbers rather than by eye, that the functions of the package agree with
+that definition and with each other:
 
-$$
-Y \sim \mathrm{Poisson}(\lambda_2)
-$$
+1. `dskellam` against an exact sum over Poisson probabilities;
+2. `pskellam` against cumulative sums of `dskellam`, and `qskellam` as its inverse;
+3. `rskellam` against `dskellam` with a goodness-of-fit test;
+4. `skellam.mle` and `skellam.reg` against known parameters in simulated data.
 
-Then the difference between these two variables is given by:
+Every random number below is drawn after `set.seed(20261108)`, so the output is the
+same each time the vignette is built.
 
-$$
-Z = X - Y
-$$
+## 1. The probability mass function
 
-It can be shown that \( Z \) follows a Skellam distribution with parameters \( \lambda_1 \) and \( \lambda_2 \):
+By definition, $P(X = x) = \sum_k P(Y_1 = k + x)\,P(Y_2 = k)$. Summing that series
+directly is slow but exact, which makes it a good reference.
 
-$$
-Z \sim \mathrm{Skellam}(\lambda_1, \lambda_2)
-$$
-
-## Small Poisson Parameters
-
-In this section, we use a small value for the Poisson parameters. We simulate two Poisson processes, compute their difference, and then compare that result with data generated directly from the Skellam distribution.
-
-### Setting Parameters
-
-```{r variables, message=FALSE}
-N <- 5000
-lambda1 <- 1.5
-lambda2 <- 0.5
+```{r pmf-exact}
+pmf_by_sum <- function(x, l1, l2) {
+  k <- max(0, -x):(abs(x) + 200 + 20 * (l1 + l2))
+  sum(dpois(k + x, l1) * dpois(k, l2))
+}
+x <- -10:15
+for (L in list(c(1.5, 0.5), c(12, 8))) {
+  ref <- vapply(x, pmf_by_sum, 0, l1 = L[1], l2 = L[2])
+  cat(sprintf("lambda = (%g, %g): largest relative difference %.1e\n",
+              L[1], L[2], max(abs(dskellam(x, L[1], L[2]) / ref - 1))))
+}
 ```
 
-### Simulating the Distributions
+The probabilities also add up to one, including at rates far beyond what the
+series above can handle quickly:
 
-```{r distribution, message=FALSE}
-X <- rpois(N, lambda1)
-Y <- rpois(N, lambda2)
-XminusY <- X - Y
-Z <- rskellam(N, lambda1, lambda2)
+```{r pmf-mass}
+for (L in list(c(1.5, 0.5), c(12, 8), c(1e4, 1e4), c(1e6, 1e6))) {
+  s <- sqrt(sum(L)); m <- L[1] - L[2]
+  x <- seq(floor(m - 30 * s), ceiling(m + 30 * s))
+  cat(sprintf("lambda = (%g, %g): 1 - sum = %.1e\n", L[1], L[2],
+              1 - sum(dskellam(x, L[1], L[2]))))
+}
 ```
 
-###  Density Comparison
+When one rate is zero the distribution is a Poisson, or a Poisson turned upside down:
 
-The first check compares the empirical density (obtained from the difference of two Poisson samples) with both the directly simulated Skellam data and the theoretical density computed via `dskellam`.
-
-```{r figure1, message=FALSE, fig.width=6, fig.height=4, out.width="100%"}
-# Your plot code here
-# Density comparison
-plot(table(XminusY), xlab = "X - Y", ylab = "", type = "p", pch = 1)
-points(table(Z), col = "red", type = "p", pch = 3, cex = 2)
-xseq <- seq(floor(par("usr")[1]), ceiling(par("usr")[2]))
-points(xseq, N * dskellam(xseq, lambda1, lambda2), col = "blue",
-       pch = 4, cex = 3)
-legend("topright", pch = c(1, 3, 4), col = c("black", "red", "blue"),
-       legend = c("rpois-rpois", "rskellam", "dskellam"))
+```{r pmf-poisson}
+all.equal(dskellam(0:10, 5, 0), dpois(0:10, 5))
+all.equal(dskellam(-(0:10), 0, 5), dpois(0:10, 5))
 ```
 
+## 2. Distribution and quantile functions
 
-### Quantile Comparison
+`pskellam(x)` should equal the running sum of `dskellam` up to `x`, and the two tails
+should add up to one.
 
-Next, we verify that the quantiles computed from the simulated Skellam data agree with those obtained via the `qskellam` function.
-
-```{r qZ, message=FALSE, fig.width=6, fig.height=4, out.width="100%"}
-# Quantile comparison
-Sprob <- seq(0, 1, by = 1/100)
-qZ <- quantile(Z, prob = Sprob)
-plot(qZ, qskellam(Sprob, lambda1, lambda2))
-abline(0, 1, col = "#FF000040")
+```{r cdf}
+l1 <- 12; l2 <- 8
+x <- -40:50
+max(abs(pskellam(x, l1, l2) - cumsum(dskellam(x, l1, l2))))
+max(abs(pskellam(x, l1, l2) + pskellam(x, l1, l2, lower.tail = FALSE) - 1))
 ```
 
+For a discrete distribution the quantile function returns the smallest integer $x$
+with $P(X \le x) \ge p$. Feeding a value of the distribution function back in must
+therefore return the same $x$, on both tails and on the log scale:
 
-## Large Poisson Parameters
-
-Now we repeat the above checks using a scenario with larger Poisson parameters. This serves to ensure that the functions perform correctly across a wider range of parameter values.
-
-### Updating Parameters
-
-```{r variables2, message=FALSE}
-lambda1 <- 12
-lambda2 <- 8
-
-X <- rpois(N, lambda1)
-Y <- rpois(N, lambda2)
-XminusY <- X - Y
-Z <- rskellam(N, lambda1, lambda2)
+```{r quantile}
+x <- -15:25
+all(qskellam(pskellam(x, l1, l2), l1, l2) == x)
+all(qskellam(pskellam(x, l1, l2, lower.tail = FALSE), l1, l2, lower.tail = FALSE) == x)
+all(qskellam(pskellam(x, l1, l2, log.p = TRUE), l1, l2, log.p = TRUE) == x)
+qskellam(c(0, 0.025, 0.5, 0.975, 1), l1, l2)
 ```
 
-### Density Comparison
+## 3. Random generation
 
-```{r density2, message=FALSE, fig.width=6, fig.height=4, out.width="100%"}
-# Density comparison
-plot(table(XminusY), xlab = "X - Y", ylab = "", type = "p", pch = 1)
-points(table(Z), col = "red", type = "p", pch = 3, cex = 2)
-xseq <- seq(floor(par("usr")[1]), ceiling(par("usr")[2]))
-points(xseq, N * dskellam(xseq, lambda1, lambda2), col = "blue",
-       pch = 4, cex = 3)
-legend("topright", pch = c(1, 3, 4), col = c("black", "red", "blue"),
-       legend = c("rpois-rpois", "rskellam", "dskellam"))
+`rskellam` draws the difference of two Poisson variates. We compare the observed
+frequencies of 20,000 draws with the probabilities from `dskellam`, pooling the
+sparse tails so every cell expects at least 5 observations.
+
+```{r random}
+N <- 20000
+lambda1 <- 1.5; lambda2 <- 0.5
+z <- rskellam(N, lambda1, lambda2)
+c(mean = mean(z), expected = lambda1 - lambda2)
+c(variance = var(z), expected = lambda1 + lambda2)
+
+lo <- qskellam(0.001, lambda1, lambda2); hi <- qskellam(0.999, lambda1, lambda2)
+cells <- lo:hi
+prob <- dskellam(cells, lambda1, lambda2)
+prob[1] <- pskellam(lo, lambda1, lambda2)                                 # all x <= lo
+prob[length(prob)] <- pskellam(hi - 1, lambda1, lambda2, lower.tail = FALSE)  # all x >= hi
+obs <- table(factor(pmin(pmax(z, lo), hi), levels = cells))
+chisq.test(obs, p = prob)
 ```
 
-### Quantile Comparison
-
-```{r qZ2, message=FALSE, fig.width=6, fig.height=4, out.width="100%"}
-# Quantile comparison
-Sprob <- seq(0, 1, by = 1/100)
-qZ <- quantile(Z, prob = Sprob)
-plot(qZ, qskellam(Sprob, lambda1, lambda2))
-abline(0, 1, col = "#FF000040")
+```{r random-plot, fig.cap = "Observed frequencies of 20,000 draws (bars) and the expected frequencies from dskellam (points)."}
+plot(cells, as.vector(obs), type = "h", lwd = 6, col = "grey70",
+     xlab = "x", ylab = "Frequency", main = "")
+points(cells, N * prob, pch = 19, col = "#0072B2")
+legend("topright", c("rskellam", "N * dskellam"), lwd = c(6, NA), pch = c(NA, 19),
+       col = c("grey70", "#0072B2"), bty = "n")
 ```
 
-## Conclusion
+## 4. Estimation
 
-This vignette has demonstrated that the functions provided in the **skellam** package produce outputs consistent with the theoretical behavior of the difference between two independent Poisson random variables. Both for low and large values of the Poisson parameters, the following are confirmed:
+### Maximum likelihood for a sample
 
-- The density of the difference of two Poisson distributions matches that of the Skellam distribution.
-- The empirical quantiles of the simulated Skellam data are in line with the theoretical quantiles computed by `qskellam`.
+```{r mle}
+x <- rpois(2000, 12) - rpois(2000, 8)
+fit <- skellam.mle(x)
+fit$param
+```
 
-These checks validate that the `rskellam`, `dskellam`, and `qskellam` functions perform as expected, providing users with a reliable toolset for working with the Skellam distribution.
+At the maximum the fitted mean equals the sample mean, and the estimates are close
+to the true values (12, 8). Samples whose variance does not exceed the absolute
+mean cannot come from a Skellam with two positive rates; the estimate then puts one
+rate at zero instead of returning a negative rate:
 
+```{r mle-boundary}
+skellam.mle(rep(3, 50))$param
+skellam.mle(c(rep(2, 45), rep(3, 5)))$param
+```
+
+### Regression
+
+`skellam.reg(y, x)` lets both rates depend on covariates through a log link. For
+$y = Y_1 - Y_2$, `param1` describes the rate of the counts that are added
+($\lambda_1$) and `param2` the rate of the counts that are subtracted ($\lambda_2$).
+
+```{r reg}
+n <- 1000
+covariate <- rnorm(n)
+y <- rpois(n, exp(1 + 0.5 * covariate)) - rpois(n, exp(-0.5 + 0.3 * covariate))
+reg <- skellam.reg(y, covariate)
+round(reg$param1, 3)   # true values 1 and 0.5
+round(reg$param2, 3)   # true values -0.5 and 0.3
+```
 
 ## Getting help
 
-If you encounter a clear bug, please file an issue with a minimal
-reproducible example on
+If you find a bug, please file an issue with a minimal reproducible example on
 [GitHub](https://github.com/monty-se/skellam/issues).

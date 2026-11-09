@@ -12,7 +12,7 @@ skellam.mle(x)
 \value{
 A list with components:
 \describe{
-\item{iters}{Number of iterations required by \code{nlm}.}
+\item{iters}{Number of log-likelihood evaluations used by the optimizer.}
 \item{loglik}{Maximized log-likelihood value.}
 \item{param}{Estimated parameters (\eqn{\hat{\lambda}_1}, \eqn{\hat{\lambda}_2}).}
 }
@@ -21,14 +21,25 @@ A list with components:
 Estimates the parameters of a Skellam distribution using maximum likelihood.
 }
 \details{
-Instead of having to maximize the log-likelihood with respect to both parameters
-(\eqn{\lambda_1} and \eqn{\lambda_2}), the function maximizes with respect to
-\eqn{\lambda_2} while setting \eqn{\lambda_1 = \lambda_2 + \bar{x}}. This
-approach improves computational efficiency. The optimization is performed using
-\code{\link[stats]{nlm}} as it proved faster than \code{\link[stats]{optimise}}.
+At the maximum likelihood estimate the fitted mean equals the sample mean,
+\eqn{\hat\lambda_1 - \hat\lambda_2 = \bar{x}}{lambda1 - lambda2 = mean(x)}, so the
+function maximizes the profile log-likelihood over \eqn{\lambda_2}{lambda2} alone,
+with \eqn{\lambda_1 = \lambda_2 + \bar{x}}{lambda1 = lambda2 + mean(x)}, using
+\code{\link[stats]{optimize}} on the admissible range
+\eqn{\lambda_2 \ge \max(0, -\bar{x})}{lambda2 >= max(0, -mean(x))}, which keeps both
+rates non-negative.
+
+The estimate can lie on the boundary, with one rate equal to 0 (the data are
+then best described by a Poisson or a reflected Poisson). This happens when
+the sample variance does not exceed the absolute sample mean, which a Skellam
+with two positive rates cannot produce (its variance is
+\eqn{\lambda_1 + \lambda_2 \ge |\lambda_1 - \lambda_2|}{lambda1 + lambda2 >= |lambda1 - lambda2|});
+for example, a sample of zeros gives \eqn{(0, 0)} and a constant sample
+\eqn{c > 0} gives \eqn{(c, 0)}.
 }
 \examples{
 # Basic example
+set.seed(1)
 x1 <- rpois(1000, 10)
 x2 <- rpois(1000, 6)
 x <- x1 - x2

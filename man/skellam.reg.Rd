@@ -19,7 +19,7 @@ A list with components:
 \itemize{
 \item Column 1: Estimated coefficients
 \item Column 2: Standard errors
-\item Column 3: t-values (coef/se)
+\item Column 3: Wald z statistics (coef/se)
 \item Column 4: p-values (Wald test)
 }
 }
@@ -30,17 +30,31 @@ A list with components:
 Fits a regression model assuming a Skellam distribution for the response variable.
 }
 \details{
-The function uses an exponential link function to ensure positive values for both
-rate parameters (\eqn{\lambda_1} and \eqn{\lambda_2}). Optimization is performed
-using \code{\link[stats]{nlm}}.
+The response is modelled as \eqn{y_i = Y_{1i} - Y_{2i}}{y = Y1 - Y2} with
+\eqn{Y_{1i} \sim \mathrm{Poisson}(\lambda_{1i})}{Y1 ~ Poisson(lambda1)} and
+\eqn{Y_{2i} \sim \mathrm{Poisson}(\lambda_{2i})}{Y2 ~ Poisson(lambda2)}, so that
+\code{param1} describes the rate of the counts that are added and
+\code{param2} the rate of the counts that are subtracted, as in
+\code{dskellam(y, lambda1, lambda2)}. Both rates use a log link,
+\eqn{\log\lambda_{ki} = x_i^\top\beta_k}{log(lambda_k) = x'beta_k}, with the same
+covariates (an intercept is added).
+
+The log-likelihood is computed with \code{dskellam(log = TRUE)} and
+maximized by \code{\link[stats]{optim}} (BFGS) with the analytic gradient,
+starting deterministically from the moment estimates of an intercept-only
+model, so repeated calls give identical results. Standard errors come from
+the inverse of the observed information (\code{\link[stats]{optimHess}}).
+Observations with a missing response or covariate are removed with a
+warning. A warning is also given if the optimizer does not converge or the
+information matrix is not invertible (standard errors are then \code{NA}).
 }
 \examples{
 set.seed(0)
 x <- rnorm(100)
 y1 <- rpois(100, exp(1 + 1 * x))
 y2 <- rpois(100, exp(-1 + 1 * x))
-y <- y2 - y1
-skellam.reg(y, x)
+y <- y1 - y2
+skellam.reg(y, x)   # param1 near (1, 1), param2 near (-1, 1)
 
 }
 \references{
@@ -53,9 +67,9 @@ Royal Statistical Society, Series A} \bold{109}(3), 296.
 the difference between two Poisson variates. \emph{Statistica Neerlandica}
 \bold{16}(1), 17-23.
 
-\item Karlis D. and Ntzoufras I. (2009) \emph{Analysis of sports data using bivariate
-Poisson models}. IMA Conference Presentation.
-\url{http://www2.stat-athens.aueb.gr/~jbn/papers/files/20_Karlis_Ntzoufras_2009_IMA_presentation_handouts_v01.pdf}
+\item Karlis, D. and Ntzoufras, I. (2009) Bayesian modelling of football outcomes:
+using the Skellam's distribution for the goal difference. \emph{IMA Journal of
+Management Mathematics} \bold{20}(2), 133-145.
 }
 }
 \author{

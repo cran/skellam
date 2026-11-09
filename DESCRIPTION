@@ -1,28 +1,38 @@
 Package: skellam
-Version: 0.2.4
-Date: 2025-04-05
-Title: Densities and Sampling for the Skellam Distribution
-Authors@R: c(person(given = c("Jerry", "W."),family = "Lewis", role = "aut", email = "Jerry.Lewis@biogen.com"),
+Version: 0.2.5
+Title: The Skellam Distribution: Densities, Sampling, Estimation and
+        Regression
+Authors@R: c(person(given = c("Jerry", "W."), family = "Lewis", role = "aut", email = "Jerry.Lewis@biogen.com"),
              person(given = c("Patrick", "E."), family = "Brown", role = "aut", email = "patrick.brown@utoronto.ca"),
              person(given = "Michail", family = "Tsagris", role = "aut", email = "mtsagris@yahoo.gr"),
-             person(given = "Montasser", family = "Ghachem", role = "cre", email = "mg@pinstimation.com"))
-Description: Functions for the Skellam distribution, including: density
-    (pmf), cdf, quantiles and regression.
-URL: https://github.com/monty-se/skellam
+             person(given = "Montasser", family = "Ghachem", role = c("aut", "cre"), email = "mg@pinstimation.com"),
+             person(given = "Oguz", family = "Ersan", role = "aut", email = "oe@pinstimation.com"))
+Description: Density, distribution function, quantile function and random
+    generation for the Skellam distribution, the distribution of the
+    difference of two independent Poisson variables (Skellam, 1946), with
+    saddlepoint approximations, maximum likelihood estimation, and a
+    regression model in which both rates depend on covariates. The
+    distribution functions remain accurate for very large rates and far
+    into the tails, on the natural and the log scale.
+URL: https://monty-se.github.io/skellam/,
+        https://github.com/monty-se/skellam
+BugReports: https://github.com/monty-se/skellam/issues
 License: GPL (>= 2)
 Imports: stats
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
+Config/testthat/edition: 3
 VignetteBuilder: knitr
-RoxygenNote: 7.3.2
 Encoding: UTF-8
 Enhances: VGAM
 BuildVignettes: true
-Packaged: 2025-04-05 23:32:10 UTC; Mountasir
-Repository: CRAN
+Config/roxygen2/version: 8.1.1
 NeedsCompilation: no
+Packaged: 2026-11-09 10:01:49 UTC; Mountasir
 Author: Jerry W. Lewis [aut],
   Patrick E. Brown [aut],
   Michail Tsagris [aut],
-  Montasser Ghachem [cre]
+  Montasser Ghachem [aut, cre],
+  Oguz Ersan [aut]
 Maintainer: Montasser Ghachem <mg@pinstimation.com>
-Date/Publication: 2025-04-07 06:40:02 UTC
+Repository: CRAN
+Date/Publication: 2026-11-09 14:10:02 UTC
